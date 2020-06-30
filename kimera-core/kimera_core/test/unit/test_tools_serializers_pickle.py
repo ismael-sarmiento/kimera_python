@@ -2,7 +2,7 @@ import unittest
 from datetime import datetime
 from time import time
 
-from kimera_core.components.tools.serializers._pickle import Pickle
+from kimera_core.components.tools.serializers import pickle
 
 
 class A:
@@ -14,7 +14,7 @@ class A:
 class TestToolsSerializersPickle(unittest.TestCase):
 
     def setUp(self) -> None:
-        self.pickle = Pickle()
+        self.pickle = pickle()
 
     def tearDown(self) -> None:
         print(self.shortDescription())

@@ -2,7 +2,7 @@ import unittest
 from datetime import datetime
 from time import time
 
-from kimera_core.components.tools.serializers.custom import KimeraSerializer
+from kimera_core.components.tools.serializers import custom
 
 
 class A:
@@ -14,7 +14,7 @@ class A:
 class TestToolsSerializersCustom(unittest.TestCase):
 
     def setUp(self) -> None:
-        self.kimera_serializer = KimeraSerializer()
+        self.kimera_serializer = custom()
 
     def tearDown(self) -> None:
         print(self.shortDescription())

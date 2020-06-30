@@ -1,9 +1,16 @@
 """ This module contains different utility tools """
 
 import importlib
+import logging
+import time
 from typing import Iterable, Optional, Union
 
+from kimera_core.components.tools.utils.constants import KIMERA_LOGGER_NAME
 
+kimera_logger = logging.getLogger(KIMERA_LOGGER_NAME)
+
+
+# TODO: Falta docu y tests a todo el fichero
 class ObjectUtils:
     """ Object utils class """
 
@@ -139,6 +146,7 @@ class ExceptionsUtils:
             raise AttributeError(f'Attribute "{attribute_name}" must be defined. Please set it')
 
 
+# Decorators
 class SingletonType(type):
     """ Implementation of the Singleton design pattern by metaclass """
 
@@ -148,3 +156,16 @@ class SingletonType(type):
         if cls not in cls._instances:
             cls._instances[cls] = super(SingletonType, cls).__call__(*args, **kwargs)
         return cls._instances[cls]
+
+
+def timing(function):
+    """ Decorator to measure the execution time of a function """
+
+    def wrap(*args, **kwargs):
+        initial_time = time.time()
+        result = function(*args, **kwargs)
+        final_time = time.time()
+        kimera_logger.info(f"EXECUTION TIME OF THE FUNCTION {function.__name__}: {final_time - initial_time} SECONDS.")
+        return result
+
+    return wrap

@@ -1,7 +1,9 @@
 """ This module contains different implementations for pandas transformer """
+from typing import List
+
 import numpy
 import pandas
-from pandas import DataFrame, Index
+from pandas import DataFrame
 
 from kimera_core.components.tools.utils.generic import ObjectUtils
 
@@ -33,16 +35,20 @@ class PandasTransformer:
         return object_pandas.shape
 
     @staticmethod
-    def common_columns_between_dataframes(df_a: DataFrame, df_b: DataFrame) -> Index:
+    def common_columns_between_dataframes(dfs: List['DataFrame']) -> list:
         """ This returns a Index with column common between the df_a and df_b. """
-        return df_a.columns.intersection(df_b.columns)
+        columns = []
+        for df_a, df_b in zip(dfs, dfs[1:]):
+            intersection = df_a.columns.intersection(df_b.columns)
+            [columns.append(i) for i in intersection]
+        return list(set(columns))
 
     @staticmethod
-    def set_composite_primary_key_column(df: DataFrame, key_column: list):
+    def set_composite_primary_key_column(df: DataFrame, composite_primary_column: list):
         COMPOSITE_PRIMARY_KEY = PandasTransformer._COMPOSITE_PRIMARY_KEY
         SEPARATOR_KEY_COLUMNS = PandasTransformer._SEPARATOR_KEY_COLUMNS
         df[COMPOSITE_PRIMARY_KEY] = ""
-        for column in key_column:
+        for column in composite_primary_column:
             df[COMPOSITE_PRIMARY_KEY] = df[COMPOSITE_PRIMARY_KEY].astype(str) + SEPARATOR_KEY_COLUMNS + df[column].astype(str)
         return df
 
@@ -89,7 +95,7 @@ class PandasTransformer:
 
     @staticmethod
     def build_df_auditory(df_a: DataFrame, df_b: DataFrame, pk_column: str):
-        common_columns = PandasTransformer.common_columns_between_dataframes(df_a, df_b)
+        common_columns = PandasTransformer.common_columns_between_dataframes([df_a, df_b])
         df_a, df_b = df_a[common_columns], df_b[common_columns]
         df_a_not_isin_df_b, df_a_isin_df_b = PandasTransformer.intersection_between_dataframes(df_a, df_b, pk_column)
         df_b_not_isin_df_a, df_b_isin_df_a = PandasTransformer.intersection_between_dataframes(df_b, df_a, pk_column)

@@ -3,68 +3,47 @@ This module contains different logger handlers
 Documentation: https://docs.python.org/3/library/logging.html
 """
 
-import logging
-from logging.handlers import DatagramHandler
-
+# ----- LOGGER BY DICT_CONFIG ----- #
 DICT_CONFIG = {
     'version': 1,
     'disable_existing_loggers': False,
     'formatters': {
-        'stream': {
-            'format': '%(asctime)s [%(levelname)s] %(name)s: %(message)s'
+        'stream_formatter_basic': {
+            'format': '%(asctime)s - %(levelname)s - %(message)s',
+            'datefmt': '%Y-%m-%d %H:%M:%S'
         },
-        'file': {
-            'format': '%(asctime)s [%(levelname)s] %(name)s: %(message)s'
+        'stream_formatter_advanced': {
+            'format': '%(asctime)s - %(name)s - %(threadName)s - %(thread)d - %(levelname)s - %(message)s',
+            'datefmt': '%Y-%m-%d %H:%M:%S'
         },
         'logstash': {
-            'format': '%(asctime)s [%(levelname)s] %(name)s: %(message)s'
+            'format': '%(asctime)s - %(name)s - %(threadName)s - %(thread)d - %(levelname)s - %(message)s',
+            'datefmt': '%Y-%m-%d %H:%M:%S'
         },
     },
     'handlers': {
-        'stream_handler': {
+        'stream_handler_basic': {
             'level': 'DEBUG',
-            'formatter': 'stream',
+            'formatter': 'stream_formatter_basic',
             'class': 'logging.StreamHandler',
         },
-        # 'file_handler': {
-        #     'level': 'ERROR',
-        #     'filename': 'records.log',
-        #     'class': 'logging.FileHandler',
-        #     'formatter': 'file'
-        # },
-        'logstash_handler': {
-            'level': 'INFO',
-            'class': 'kimera_core.components.tools.utils.logger.KimeraLogstashHandler',
-            'host': 'localhost',
-            'port': 9998,
-            'formatter': 'logstash'
+        'stream_handler_advanced': {
+            'level': 'DEBUG',
+            'formatter': 'stream_formatter_advanced',
+            'class': 'logging.StreamHandler',
         }
     },
     'loggers': {
-        'logger1': {
-            'handlers': ['stream_handler', 'logstash_handler'],
+        'kimera-core-basic': {
+            'handlers': ['stream_handler_basic'],
             'level': 'DEBUG',
             'propagate': True
         },
-        'logger2': {
-            'handlers': ['stream_handler', 'logstash_handler'],
+        'kimera-core-advanced': {
+            'handlers': ['stream_handler_advanced'],
             'level': 'DEBUG',
             'propagate': True
         },
 
     }
 }
-
-
-class KimeraLogstashHandler(DatagramHandler):
-    """ Custom DatagramHandler """
-
-    def makePickle(self, record: logging.LogRecord) -> bytes:
-        """
-        Overwriting the method [see parent documentation]
-
-        The record is serialized to bytes using the codec registered for encoding.
-        :param record: [LogRecord] Record
-        :return: [bytes] Serialized record
-        """
-        return str.encode(self.format(record))
