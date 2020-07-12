@@ -1,4 +1,4 @@
-""" This module contains different implementations for pandas extraction """
+""" This module contains different implementations for pandas extractor """
 
 from abc import ABC, abstractmethod
 from typing import Union
@@ -20,9 +20,8 @@ class Extractor(ABC):
 
 class PandasCSVExtractor(Extractor):
     """
-        Pandas - CSV Extractor
-
-        Reference Documentation: https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.read_csv.html
+    Pandas - CSV Extractor
+    Reference Documentation: https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.read_csv.html
     """
 
     def read(self, **kwargs) -> Union[DataFrame, TextParser]:

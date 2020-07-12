@@ -1,5 +1,6 @@
-from kimera_data.components.etl.extractor import ETLExtractor
-from kimera_data.components.etl.transformer import ETLTransformer
+from kimera_data.components.etl.extractors import ETLExtractor
+from kimera_data.components.etl.loaders import ETLLoader
+from kimera_data.components.etl.transformers import ETLTransformer
 
 
 def extractor():
@@ -8,3 +9,7 @@ def extractor():
 
 def transformer():
     return ETLTransformer()
+
+
+def loader():
+    return ETLLoader()

@@ -8,5 +8,4 @@ def extract_csv_file():
 
 if __name__ == '__main__':
     data = extract_csv_file()
-
-    print(data)
+    print(f"Extractor: \n{data}")

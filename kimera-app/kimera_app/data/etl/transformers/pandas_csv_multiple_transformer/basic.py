@@ -22,4 +22,3 @@ if __name__ == '__main__':
     transformer = transform_csv_file(data)
     transformers = transforms_csv_file(data)
     transformed_data = kimera_etl.transformer().multiple([transformer, transformers]).transform()
-    print(transformed_data)
