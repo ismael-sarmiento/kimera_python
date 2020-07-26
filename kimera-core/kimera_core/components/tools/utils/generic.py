@@ -3,6 +3,7 @@
 import importlib
 import logging
 import time
+from collections import defaultdict
 from typing import Iterable, Optional, Union
 
 from kimera_core.components.tools.utils.constants import KIMERA_LOGGER_NAME
@@ -146,7 +147,36 @@ class ExceptionsUtils:
             raise AttributeError(f'Attribute "{attribute_name}" must be defined. Please set it')
 
 
-# Decorators
+class NumberUtils:
+    """ Number utils class """
+
+    @staticmethod
+    def is_number(_object):
+        return isinstance(_object, (int, float, complex))
+
+    @staticmethod
+    def is_int(_object):
+        return isinstance(_object, int)
+
+    @staticmethod
+    def is_float(_object):
+        return isinstance(_object, float)
+
+    @staticmethod
+    def is_complex(_object):
+        return isinstance(_object, complex)
+
+
+class DictUtils:
+    """ Dict utils class """
+
+    @staticmethod
+    def tree():
+        """ Tree Data Structure """
+        return defaultdict(DictUtils.tree)
+
+
+# Metaclass
 class SingletonType(type):
     """ Implementation of the Singleton design pattern by metaclass """
 
@@ -158,6 +188,7 @@ class SingletonType(type):
         return cls._instances[cls]
 
 
+# Decorators
 def timing(function):
     """ Decorator to measure the execution time of a function """
 
