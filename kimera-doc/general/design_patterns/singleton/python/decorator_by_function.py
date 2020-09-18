@@ -40,9 +40,6 @@ class MyClass(BaseClass):
         return self.count
 
 
-class Ismael: pass
-
-
 if __name__ == '__main__':
     # singleton_decorator_by_function
     print("SINGLETON PATTERN: DECORATOR BY FUNCTION")
