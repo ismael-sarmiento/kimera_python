@@ -1,5 +1,5 @@
 """
-    https://docs.sqlalchemy.org/en/13/core/engines.html
+    https://docs.sqlalchemy.org/en/13/core/
 """
 from sqlalchemy import create_engine, engine_from_config
 from sqlalchemy.engine.url import make_url, URL
@@ -52,7 +52,6 @@ class SQLAlchemyCore:
         - kwargs: Each keyword argument to engine_from_config() itself overrides the corresponding item taken from
         the ‘configuration’ dictionary. Keyword arguments should not be prefixed.
         """
-
         return engine_from_config(configuration, prefix, **kwargs)
 
     @staticmethod
