@@ -1,3 +1,3 @@
 # Kimera
 
-Project that collects utility tools in python
+Personal repository - Compilation of all my knowledge in python.
