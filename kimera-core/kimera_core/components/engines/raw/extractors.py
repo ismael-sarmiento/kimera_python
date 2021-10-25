@@ -14,8 +14,7 @@ class Extractor(ABC):
 
 
 class RawZipExtractor(Extractor):
-    """
-        Raw - Zip Extractor
+    """ Raw - Zip Extractor
 
         Class with methods to open, read, write, close, list zip files.
 
@@ -44,7 +43,7 @@ class RawZipExtractor(Extractor):
             result = [z.open(file) for file in z.namelist()]
 
         :param kwargs: Options.
-        :return: [result] Reading internal zip files.
+        :return: [result] Reading internal zip file.
         """
         ExceptionsUtils.raise_exception_if_key_not_in_kwargs('file', **kwargs)
         return self._file_descriptors(**kwargs)
@@ -54,3 +53,39 @@ class RawZipExtractor(Extractor):
         from zipfile import ZipFile
         with ZipFile(**kwargs) as z:
             return [z.open(file) for file in z.namelist()]
+
+
+class RawJsonExtractor(Extractor):
+    """ Raw - JSON Extractor
+
+    Deserialize ``fp=file_path`` (a ``.read()``-supporting file-like object containing
+    a JSON document) to a Python object.
+
+    ``object_hook`` is an optional function that will be called with the
+    result of any object literal decode (a ``dict``). The return value of
+    ``object_hook`` will be used instead of the ``dict``. This feature
+    can be used to implement custom decoders (e.g. JSON-RPC class hinting).
+
+    ``object_pairs_hook`` is an optional function that will be called with the
+    result of any object literal decoded with an ordered list of pairs.  The
+    return value of ``object_pairs_hook`` will be used instead of the ``dict``.
+    This feature can be used to implement custom decoders.  If ``object_hook``
+    is also defined, the ``object_pairs_hook`` takes priority.
+
+    To use a custom ``JSONDecoder`` subclass, specify it with the ``cls``
+    kwarg; otherwise ``JSONDecoder`` is used.
+    """
+
+    def read(self, **kwargs) -> object:
+        """
+            j = json.load(fp, *, cls=None, object_hook=None, parse_float=None, parse_int=None, parse_constant=None,
+                          object_pairs_hook=None, **kw)
+
+            result = json.load(**kwargs)
+
+        :param kwargs: Options.
+        :return: [result] Reading internal json file.
+        """
+        import json
+        ExceptionsUtils.raise_exception_if_key_not_in_kwargs('fp', **kwargs)
+        return json.load(**kwargs)
