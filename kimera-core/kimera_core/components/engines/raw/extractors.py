@@ -1,5 +1,5 @@
 """ This module contains different implementations for raw extraction """
-
+import json
 from abc import ABC, abstractmethod
 
 from kimera_core.components.tools.utils.generic import ExceptionsUtils
@@ -42,14 +42,14 @@ class RawZipExtractor(Extractor):
 
             result = [z.open(file) for file in z.namelist()]
 
-        :param kwargs: Options.
-        :return: [result] Reading internal zip file.
+        kwargs: Options.
+        return: [result] Reading internal zip file.
         """
         ExceptionsUtils.raise_exception_if_key_not_in_kwargs('file', **kwargs)
-        return self._file_descriptors(**kwargs)
+        return self._zip_content(**kwargs)
 
     @staticmethod
-    def _file_descriptors(**kwargs) -> list:
+    def _zip_content(**kwargs) -> list:
         from zipfile import ZipFile
         with ZipFile(**kwargs) as z:
             return [z.open(file) for file in z.namelist()]
@@ -76,16 +76,22 @@ class RawJsonExtractor(Extractor):
     kwarg; otherwise ``JSONDecoder`` is used.
     """
 
-    def read(self, **kwargs) -> object:
-        """
-            j = json.load(fp, *, cls=None, object_hook=None, parse_float=None, parse_int=None, parse_constant=None,
-                          object_pairs_hook=None, **kw)
+    def read(self, file_path: str, **kwargs) -> dict:
+        """ Reader of the content of a JSON file
 
-            result = json.load(**kwargs)
-
-        :param kwargs: Options.
-        :return: [result] Reading internal json file.
+        param file_path: Path of JSON File.
+        param kwargs: Options.
+        return: [result] Reading internal json file.
         """
-        import json
-        ExceptionsUtils.raise_exception_if_key_not_in_kwargs('fp', **kwargs)
-        return json.load(**kwargs)
+        with open(file_path) as j:
+            json_content = json.load(j)
+        return json_content
+
+    def read_from_json_content(self, json_content: str, **kwargs) -> dict:
+        """ Reader of the content of a JSON file
+
+        param json_content: Content of JSON File.
+        param kwargs: Options.
+        return: [result] Reading internal json file.
+        """
+        return json.loads(json_content, **kwargs)
