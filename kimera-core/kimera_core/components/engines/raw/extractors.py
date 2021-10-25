@@ -86,12 +86,3 @@ class RawJsonExtractor(Extractor):
         with open(file_path) as j:
             json_content = json.load(j)
         return json_content
-
-    def read_from_json_content(self, json_content: str, **kwargs) -> dict:
-        """ Reader of the content of a JSON file
-
-        param json_content: Content of JSON File.
-        param kwargs: Options.
-        return: [result] Reading internal json file.
-        """
-        return json.loads(json_content, **kwargs)
