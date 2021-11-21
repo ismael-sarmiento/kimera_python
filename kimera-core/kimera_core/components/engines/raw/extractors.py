@@ -1,4 +1,5 @@
 """ This module contains different implementations for raw extraction """
+
 import json
 from abc import ABC, abstractmethod
 
@@ -15,6 +16,8 @@ class Extractor(ABC):
 
 class RawZipExtractor(Extractor):
     """ Raw - Zip Extractor
+
+    https://docs.python.org/3/library/zipfile.html#zipfile.ZipFile
 
         Class with methods to open, read, write, close, list zip files.
 
@@ -58,31 +61,24 @@ class RawZipExtractor(Extractor):
 class RawJsonExtractor(Extractor):
     """ Raw - JSON Extractor
 
+    https://docs.python.org/3/library/json.html
+
     Deserialize ``fp=file_path`` (a ``.read()``-supporting file-like object containing
     a JSON document) to a Python object.
-
-    ``object_hook`` is an optional function that will be called with the
-    result of any object literal decode (a ``dict``). The return value of
-    ``object_hook`` will be used instead of the ``dict``. This feature
-    can be used to implement custom decoders (e.g. JSON-RPC class hinting).
-
-    ``object_pairs_hook`` is an optional function that will be called with the
-    result of any object literal decoded with an ordered list of pairs.  The
-    return value of ``object_pairs_hook`` will be used instead of the ``dict``.
-    This feature can be used to implement custom decoders.  If ``object_hook``
-    is also defined, the ``object_pairs_hook`` takes priority.
-
-    To use a custom ``JSONDecoder`` subclass, specify it with the ``cls``
-    kwarg; otherwise ``JSONDecoder`` is used.
     """
 
-    def read(self, file_path: str, **kwargs) -> dict:
+    def read(self, fp_or_sj: str, **kwargs) -> dict:
         """ Reader of the content of a JSON file
 
-        param file_path: Path of JSON File.
-        param kwargs: Options.
+        https://docs.python.org/3/library/json.html#json.load
+
+        :param fp_or_sj: Path of JSON File or String in JSON Format.
+        :param kwargs: Options.
         return: [result] Reading internal json file.
         """
-        with open(file_path) as j:
-            json_content = json.load(j)
-        return json_content
+        try:
+            with open(fp_or_sj) as f:
+                json_content = json.load(f)
+            return json_content
+        except Exception:
+            return json.loads(fp_or_sj)

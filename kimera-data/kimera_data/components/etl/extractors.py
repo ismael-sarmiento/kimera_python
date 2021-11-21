@@ -1,12 +1,13 @@
 from typing import List, Iterable
 
-from kimera_core.components.engines.raw.extractors import RawZipExtractor
+from kimera_core.components.engines.raw.extractors import RawZipExtractor, RawJsonExtractor
 from kimera_core.components.tools.utils.generic import ExceptionsUtils, ObjectUtils
 from kimera_data.components.engines.pandas.extractors import PandasCSVExtractor
 
 _EXTRACTORS = {
     'raw': {
-        'zip': RawZipExtractor
+        'zip': RawZipExtractor,
+        'json': RawJsonExtractor
     },
     'pandas': {
         'csv': PandasCSVExtractor
@@ -46,7 +47,7 @@ class ETLExtractor:
     def multiple(self, extractors: Iterable[List['ETLExtractor']]):
         if not (extractors and ObjectUtils.internal_objects_of_iterable_are_instances_of_class(extractors, ETLExtractor) and
                 ObjectUtils.object_is_instance_of_class(extractors, list)):
-            raise TypeError("Input parameters must be of type ETLExtractor 'list'.")
+            raise TypeError("Input :parameters must be of type ETLExtractor 'list'.")
         self._extractors = extractors
         return self
 
