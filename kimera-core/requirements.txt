@@ -1,3 +1,2 @@
-tox==3.15.2
-pluggy==0.13.1
-coverage==5.1
+tox==3.24.5
+coverage==6.3
