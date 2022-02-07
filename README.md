@@ -1,3 +1,3 @@
 # Kimera
 
-Project that collects utility tools in python
+Project that collects tools in python

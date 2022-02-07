@@ -1,3 +1,3 @@
 # kimera-db
 
-Project that collects data utility tools in python.
+Project that collects db tools in python.

@@ -1,12 +1,13 @@
 """
     https://docs.sqlalchemy.org/en/13/core/
 """
+
 from sqlalchemy import create_engine, engine_from_config
 from sqlalchemy.engine.url import make_url, URL
 
 
 class SQLAlchemyCore:
-    URL = "{dialect}+{driver}://{username}:{password}@{host}:{port}/{database}"
+    URL_STRUCTURE = "{dialect}+{driver}://{username}:{password}@{host}:{port}/{database}"
 
     @staticmethod
     def create_engine(url, *args, **kwargs):
@@ -18,7 +19,7 @@ class SQLAlchemyCore:
 
             url_structure: dialect+driver://username:password@host:port/database
 
-        - username: The user name.
+        - username: The username to database access.
         - password: database password.
         - host: The name of the host.
         - port: The port number.
@@ -67,7 +68,7 @@ class SQLAlchemyCore:
         return make_url(name_or_url)
 
     @staticmethod
-    def create_url(drivername, username=None, password=None, host=None, port=None, database=None, query=None):
+    def create_url(driver_name, username=None, password=None, host=None, port=None, database=None, query=None):
         """
             Documentation: https://docs.sqlalchemy.org/en/13/core/engines.html#sqlalchemy.engine.url.URL
 
@@ -80,6 +81,13 @@ class SQLAlchemyCore:
 
             drivername – the name of the database backend. This name will correspond to a module in sqlalchemy/databases
             or a third party plug-in.
+                - firebird
+                - mssql
+                - mysql
+                - postgresql
+                - sqlite
+                - oracle
+                - sybase
 
         - username: The user name.
         - password: database password.
@@ -88,4 +96,4 @@ class SQLAlchemyCore:
         - database: The database name. (optional)
         - query: A dictionary of options to be passed to the dialect and/or the DBAPI upon connect. (optional)
         """
-        return URL(drivername, username, password, host, port, database, query)
+        return URL.create(driver_name, username, password, host, port, database, query)
