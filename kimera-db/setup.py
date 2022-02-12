@@ -17,7 +17,7 @@ setuptools.setup(
     description="Project that collects db tools in python",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/ismael-sarmiento/kimera-db",
+    url="https://github.com/ismael-sarmiento/Kimera/tree/master/kimera-db",
     packages=setuptools.find_packages(),
     classifiers=[
         "Programming Language :: Python :: 3",

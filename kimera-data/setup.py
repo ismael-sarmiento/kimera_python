@@ -17,7 +17,7 @@ setuptools.setup(
     description="Project that collects data tools in python",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/ismael-sarmiento/kimera-data",
+    url="https://github.com/ismael-sarmiento/Kimera/tree/master/kimera-data",
     packages=setuptools.find_packages(),
     classifiers=[
         "Programming Language :: Python :: 3",
