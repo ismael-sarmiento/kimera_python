@@ -1,23 +1,13 @@
 """ This module contains different implementations for raw extraction """
-
-from abc import ABC, abstractmethod
-
+from kimera_core.components.engines.abstract.extractor import Extractor
 from kimera_core.components.tools.utils.generic import ExceptionsUtils
-
-
-class Extractor(ABC):
-    """ Abstract class that defines how to extract an object """
-
-    @abstractmethod
-    def read(self, **kwargs) -> object:
-        """ Extractor method """
 
 
 class RawZipExtractor(Extractor):
     """
-        Raw - Zip Extractor
+    Raw - Zip Extractor
 
-        Class with methods to open, read, write, close, list zip files.
+    Class with methods to open, read, write and close a zip file.
 
         z = ZipFile(file, mode="r", compression=ZIP_STORED, allowZip64=True, compresslevel=None)
 
@@ -39,12 +29,14 @@ class RawZipExtractor(Extractor):
 
     def read(self, **kwargs) -> list:
         """
+        Method that open a zip file
+
             z = ZipFile(file, mode="r", compression=ZIP_STORED, allowZip64=True, compresslevel=None)
 
             result = [z.open(file) for file in z.namelist()]
 
-        :param kwargs: Options.
-        :return: [result] Reading internal zip files.
+        kwargs: Options.
+        :return:Reading internal zip files.
         """
         ExceptionsUtils.raise_exception_if_key_not_in_kwargs('file', **kwargs)
         return self._file_descriptors(**kwargs)

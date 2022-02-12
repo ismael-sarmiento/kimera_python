@@ -1,15 +1,15 @@
-import kimera_core.components.engines.raw.extractors as kimera_core_extractor
-import kimera_core.components.engines.raw.loaders as kimera_core_loader
-import kimera_core.components.engines.raw.transformers as kimera_core_transformer
+from kimera_core.components.engines.raw import extractors as kimera_core_extractors
+from kimera_core.components.engines.raw import loaders as kimera_core_loaders
+from kimera_core.components.engines.raw import transformers as kimera_core_transformers
 
 
 def extractor():
-    return kimera_core_extractor
+    return kimera_core_extractors
 
 
 def transformer():
-    return kimera_core_transformer
+    return kimera_core_transformers
 
 
 def loader():
-    return kimera_core_loader
+    return kimera_core_loaders

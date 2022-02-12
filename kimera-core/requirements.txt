@@ -1,2 +1,2 @@
 tox==3.24.5
-coverage==6.3
+coverage==6.2
