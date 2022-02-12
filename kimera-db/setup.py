@@ -7,9 +7,11 @@ import setuptools
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
+REQUIREMENTS = [i.strip() for i in open("requirements.txt").readlines()]
+
 setuptools.setup(
     name="kimera_db",
-    version="0.0.1",
+    version="0.0.3",
     author="Ismael Antonio Sarmiento Barberia",
     author_email="ismaelantonio.sarmiento@gmail.com",
     description="Project that collects db tools in python",
@@ -24,5 +26,6 @@ setuptools.setup(
         "Natural Language :: English",
         "Development Status :: 1 - Planning"
     ],
+    install_requires=REQUIREMENTS,
     python_requires='>=3.6',
 )

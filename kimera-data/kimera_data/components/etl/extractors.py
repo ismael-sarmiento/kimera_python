@@ -2,7 +2,8 @@ from typing import List, Iterable
 
 from kimera_core.components.engines.raw.extractors import RawZipExtractor
 from kimera_core.components.tools.utils.generic import ExceptionsUtils, ObjectUtils
-from kimera_data.components.engines.pandas.extractors import PandasCSVExtractor
+from kimera_data.components.engines.pandas.extractor import PandasCSVExtractor
+from kimera_db.components import create_table_if_not_exist as kimera_db_create_table_if_not_exist
 
 _EXTRACTORS = {
     'raw': {
@@ -26,57 +27,68 @@ class FactoryExtractors:
 class ETLExtractor:
 
     def __init__(self):
-        self._engine = None
-        self._format = None
-        self._options = dict()
-        self._extractors = list()
+        self.__engine = None
+        self.__format = None
+        self.__options = dict()
+        self.__extractors = list()
 
-    def engine(self, engine):
-        self._engine = engine
+    def engine(self, engine: str):
+        self.__engine = engine
         return self
 
-    def format(self, fmt):
-        self._format = fmt
+    def format(self, fmt: str):
+        self.__format = fmt
         return self
 
     def option(self, key, value):
-        self._options[key] = value
+        self.__options[key] = value
+        return self
+
+    def options(self, options: dict):
+        self.__options.update(options)
+        return self
+
+    def create_table_if_not_exist(self, source_data, dialect, driver_name, username, password, host, port, database,
+                                  limit, query_list, table_name):
+        kimera_db_create_table_if_not_exist(source_data, dialect, driver_name, username, password, host, port, database,
+                                            limit, query_list, table_name)
         return self
 
     def multiple(self, extractors: Iterable[List['ETLExtractor']]):
-        if not (extractors and ObjectUtils.internal_objects_of_iterable_are_instances_of_class(extractors, ETLExtractor) and
+        if not (extractors and ObjectUtils.internal_objects_of_iterable_are_instances_of_class(extractors,
+                                                                                               ETLExtractor) and
                 ObjectUtils.object_is_instance_of_class(extractors, list)):
             raise TypeError("Input parameters must be of type ETLExtractor 'list'.")
-        self._extractors = extractors
+        self.__extractors = extractors
         return self
 
     def read(self):
-        if hasattr(self, '_extractors') and self._extractors:
-            return self._multi_read()
+        if hasattr(self, '__extractors') and self.__extractors:
+            return self.__multi_read()
         else:
-            return self._single_read()
-
-    def _single_read(self):
-        data = self._extract_data()
-        return data
-
-    def _multi_read(self):
-        data = [extractor.read() for extractor in self._extractors]
-        return data
-
-    def _build_options(self):
-        options = self._options
-        return options
-
-    def _extract_data(self):
-        ExceptionsUtils.raise_exception_if_attr_not_defined(self, '_engine')
-        ExceptionsUtils.raise_exception_if_attr_not_defined(self, '_format')
-        options = self._build_options()
-        data = FactoryExtractors().get_extractor(engine=self._engine, fmt=self._format).read(**options)
-        return data
+            return self.__single_read()
 
     def clear(self):
-        self._engine = None
-        self._format = None
-        self._options = dict()
-        self._extractors = list()
+        self.__engine = None
+        self.__format = None
+        self.__options = dict()
+        self.__extractors = list()
+
+    def __single_read(self):
+        data = self.__extract_data()
+        return data
+
+    def __multi_read(self):
+        data = [extractor.read() for extractor in self.__extractors]
+        return data
+
+    def __build_options(self):
+        options = self.__options
+        return options
+
+    def __extract_data(self):
+        ExceptionsUtils.raise_exception_if_attr_not_defined(self, '__engine')
+        ExceptionsUtils.raise_exception_if_attr_not_defined(self, '__format')
+        options = self.__build_options()
+        data = FactoryExtractors().get_extractor(engine=self.__engine, fmt=self.__format).read(**options)
+        return data

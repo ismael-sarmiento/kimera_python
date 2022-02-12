@@ -59,11 +59,12 @@ class PandasTransformer(ABC):
 
     @staticmethod
     def set_composite_primary_key_column(df: DataFrame, composite_primary_column: list):
-        COMPOSITE_PRIMARY_KEY = PandasTransformer._COMPOSITE_PRIMARY_KEY
-        SEPARATOR_KEY_COLUMNS = PandasTransformer._SEPARATOR_KEY_COLUMNS
-        df[COMPOSITE_PRIMARY_KEY] = ""
+        composite_primary_key = PandasTransformer._COMPOSITE_PRIMARY_KEY
+        separator_key_columns = PandasTransformer._SEPARATOR_KEY_COLUMNS
+        df[composite_primary_key] = ""
         for column in composite_primary_column:
-            df[COMPOSITE_PRIMARY_KEY] = df[COMPOSITE_PRIMARY_KEY].astype(str) + SEPARATOR_KEY_COLUMNS + df[column].astype(str)
+            df[composite_primary_key] = df[composite_primary_key].astype(str) + separator_key_columns + \
+                                        df[column].astype(str)
         return df
 
     @staticmethod
@@ -74,10 +75,10 @@ class PandasTransformer(ABC):
 
     @staticmethod
     def replace_null_with_value(df, value, **kwargs):
-        return df.where(pandas.notnull(df), other=value, **kwargs)
+        return df.where(pandas.notnull(df), other=value, **kwargs)  # df.fillna()
 
 
-class PandasTransformerAuditory(PandasTransformer):
+class PandasTransformerBasicAuditory(PandasTransformer):
 
     @staticmethod
     def build_df_differences(df_a_isin_df_b_prepared: DataFrame, df_b_isin_df_a_prepared: DataFrame):
@@ -97,38 +98,44 @@ class PandasTransformerAuditory(PandasTransformer):
             return df_differences
 
     @staticmethod
-    def _prepare_dataframes_to_build_differences(df_a_isin_df_b: DataFrame, df_b_isin_df_a: DataFrame, pk_column: str):
-        df_a_isin_df_b = df_a_isin_df_b.drop_duplicates(subset=[pk_column]).reindex(columns=df_a_isin_df_b.columns).drop_duplicates()
-        df_b_isin_df_a = df_b_isin_df_a.drop_duplicates(subset=[pk_column]).reindex(columns=df_b_isin_df_a.columns).drop_duplicates()
+    def __prepare_dataframes_to_build_differences(df_a_isin_df_b: DataFrame, df_b_isin_df_a: DataFrame, pk_column: str):
+        df_a_isin_df_b = df_a_isin_df_b.drop_duplicates(subset=[pk_column]).reindex(
+            columns=df_a_isin_df_b.columns).drop_duplicates()
+        df_b_isin_df_a = df_b_isin_df_a.drop_duplicates(subset=[pk_column]).reindex(
+            columns=df_b_isin_df_a.columns).drop_duplicates()
         df_a_prepared, df_b_prepared = df_a_isin_df_b.set_index(pk_column), df_b_isin_df_a.set_index(pk_column)
         return df_a_prepared, df_b_prepared
 
     @staticmethod
-    def _build_differences(df_a_isin_df_b: DataFrame, df_b_isin_df_a: DataFrame, pk_column: str):
-        df_a_isin_df_b_prepared, df_b_isin_df_a_prepared = PandasTransformerAuditory._prepare_dataframes_to_build_differences(
-            df_a_isin_df_b, df_b_isin_df_a, pk_column)
-        df_with_differences = PandasTransformerAuditory.build_df_differences(df_a_isin_df_b_prepared, df_b_isin_df_a_prepared)
+    def __build_differences(df_a_isin_df_b: DataFrame, df_b_isin_df_a: DataFrame, pk_column: str):
+        df_a_isin_df_b_prepared, df_b_isin_df_a_prepared = PandasTransformerBasicAuditory. \
+            __prepare_dataframes_to_build_differences(df_a_isin_df_b, df_b_isin_df_a, pk_column)
+        df_with_differences = PandasTransformerBasicAuditory. \
+            build_df_differences(df_a_isin_df_b_prepared, df_b_isin_df_a_prepared)
         if ObjectUtils.object_is_instance_of_class(df_with_differences, DataFrame):
-            df_b_isin_df_a_modified = df_b_isin_df_a[df_b_isin_df_a[pk_column].isin(df_with_differences.reset_index().pk)]
+            df_b_isin_df_a_modified = df_b_isin_df_a[df_b_isin_df_a[pk_column].isin(df_with_differences.reset_index().
+                                                                                    pk)]
             return df_b_isin_df_a_modified, df_with_differences
         else:
-            return None, None
+            return None, None  # pd.DataFrame()
 
     @staticmethod
     def build_df_auditory(df_a: DataFrame, df_b: DataFrame, primary_key_column: str):
         common_columns = PandasTransformer.common_columns_between_dataframes([df_a, df_b])
         df_a, df_b = df_a[common_columns], df_b[common_columns]
-        df_a_not_isin_df_b, df_a_isin_df_b = PandasTransformer.intersection_between_dataframes(df_a, df_b, primary_key_column)
-        df_b_not_isin_df_a, df_b_isin_df_a = PandasTransformer.intersection_between_dataframes(df_b, df_a, primary_key_column)
-        df_b_isin_df_a_modified, df_with_detail_differences = PandasTransformerAuditory. \
-            _build_differences(df_a_isin_df_b, df_b_isin_df_a, primary_key_column)
+        df_a_not_isin_df_b, df_a_isin_df_b = PandasTransformer. \
+            intersection_between_dataframes(df_a, df_b, primary_key_column)
+        df_b_not_isin_df_a, df_b_isin_df_a = PandasTransformer. \
+            intersection_between_dataframes(df_b, df_a, primary_key_column)
+        df_b_isin_df_a_modified, df_with_detail_differences = PandasTransformerBasicAuditory. \
+            __build_differences(df_a_isin_df_b, df_b_isin_df_a, primary_key_column)
         return df_a_not_isin_df_b, df_b_not_isin_df_a, df_b_isin_df_a_modified, df_with_detail_differences
 
 
-class PandasTransformerPrelation(PandasTransformer):
+class PandasTransformerBasicPrelation(PandasTransformer):
 
     @staticmethod
-    def _prepare_df_output(prelation_info: dict, output_index: Series):
+    def __prepare_df_output(prelation_info: dict, output_index: Series):
         output_columns = list(prelation_info.keys())
         df_output = pandas.DataFrame(columns=output_columns)
         df_output[PandasTransformer._COMPOSITE_PRIMARY_KEY] = output_index
@@ -136,27 +143,34 @@ class PandasTransformerPrelation(PandasTransformer):
         return df_output, output_columns
 
     @staticmethod
-    def _prepare_prelation_inputs(prelation_inputs: list, composite_primary_column: list):
-        prelation_inputs = [PandasTransformer.set_composite_primary_key_column(prelation_input, composite_primary_column)
-                            for prelation_input in prelation_inputs]
+    def __prepare_prelation_inputs(prelation_inputs: list, composite_primary_column: list):
+        prelation_inputs = [
+            PandasTransformer.set_composite_primary_key_column(prelation_input, composite_primary_column)
+            for prelation_input in prelation_inputs]
         output_index = pandas.concat([prelation_input[PandasTransformer._COMPOSITE_PRIMARY_KEY]
                                       for prelation_input in prelation_inputs]).drop_duplicates()
         prelation_inputs = [prelation_input.set_index(prelation_input[PandasTransformer._COMPOSITE_PRIMARY_KEY]).
-                                drop(columns=PandasTransformer._COMPOSITE_PRIMARY_KEY) for prelation_input in prelation_inputs]
+                                drop(columns=PandasTransformer._COMPOSITE_PRIMARY_KEY) for prelation_input in
+                            prelation_inputs]
         return prelation_inputs, output_index
 
     @staticmethod
     def prelation_external(compose_primary_key: list, prelation_inputs: list, prelation_info: dict) -> DataFrame:
-        prelation_inputs, output_index = PandasTransformerPrelation._prepare_prelation_inputs(prelation_inputs, compose_primary_key)
-        df_output, output_columns = PandasTransformerPrelation._prepare_df_output(prelation_info, output_index)
+        prelation_inputs, output_index = PandasTransformerBasicPrelation.__prepare_prelation_inputs(prelation_inputs,
+                                                                                                    compose_primary_key)
+        df_output, output_columns = PandasTransformerBasicPrelation.__prepare_df_output(prelation_info, output_index)
         for output_column in output_columns:
             prelation_input_names = prelation_info[output_column]
-            prelation_inputs_by_column = PandasTransformer.object_pandas_by_names(prelation_inputs, prelation_input_names)
+            prelation_inputs_by_column = PandasTransformer. \
+                object_pandas_by_names(prelation_inputs, prelation_input_names)
             for prelation_input in prelation_inputs_by_column:
                 df_output_null = df_output.loc[df_output[output_column].isna(), [output_column]]
                 if not df_output_null.empty:
-                    df_prelation = df_output_null.merge(prelation_input[[output_column]], on=PandasTransformer._COMPOSITE_PRIMARY_KEY,
-                                                        how='inner', suffixes=('_primary', '_secundary'), indicator=True)
-                    df_output.loc[df_output[output_column].isna(), output_column] = df_prelation[output_column + '_secundary']
+                    df_prelation = df_output_null.merge(prelation_input[[output_column]],
+                                                        on=PandasTransformer._COMPOSITE_PRIMARY_KEY,
+                                                        how='inner', suffixes=('_primary', '_secondary'),
+                                                        indicator=True)
+                    df_output.loc[df_output[output_column].isna(), output_column] = df_prelation[
+                        output_column + '_secondary']
         df_output = df_output.reset_index(drop=True)
         return df_output

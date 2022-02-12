@@ -1,3 +1,3 @@
 # kimera-data
 
-Project that collects data utility tools in python.
+Project that collects data tools in python.
