@@ -1,12 +1,12 @@
 import os
 
-KIMERA_DB = "kimera_db"
+KIMERA_PROJECT = "kimera_db"
 TEST_FOLDER = "test"
 RESOURCES = "resources"
 
 
 def resources_path():
-    resources = os.path.join(os.getcwd().split(KIMERA_DB)[0], KIMERA_DB, TEST_FOLDER, RESOURCES)
+    resources = os.path.join(os.getcwd().split(KIMERA_PROJECT)[0], KIMERA_PROJECT, TEST_FOLDER, RESOURCES)
     return resources
 
 
