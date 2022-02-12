@@ -1,4 +1,3 @@
+kimera_db==0.0.4
 coverage==6.2
 pandas==1.1.5
-kimera_core==0.0.13
-kimera_db==0.0.3

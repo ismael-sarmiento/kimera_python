@@ -11,7 +11,7 @@ REQUIREMENTS = [i.strip() for i in open("requirements.txt").readlines()]
 
 setuptools.setup(
     name="kimera_db",
-    version="0.0.3",
+    version="0.0.4",
     author="Ismael Antonio Sarmiento Barberia",
     author_email="ismaelantonio.sarmiento@gmail.com",
     description="Project that collects db tools in python",
