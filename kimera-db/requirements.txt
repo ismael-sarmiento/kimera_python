@@ -1,0 +1,4 @@
+coverage==6.2
+ddlgenerator==0.1.9
+psycopg2-binary==2.9.3
+kimera_core==0.0.13

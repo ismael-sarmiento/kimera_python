@@ -1,0 +1,2 @@
+;Documentation: https://packaging.python.org/en/latest/guides/using-manifest-in/
+include requirements.txt
