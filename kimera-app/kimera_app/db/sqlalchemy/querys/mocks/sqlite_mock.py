@@ -2,11 +2,13 @@ from sqlalchemy import Column, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import Session
 
-import kimera_db.components.tools.mock as sqlalchemy_mock
+from kimera_db.components import SQLAlchemyCore
 
-mock_engine = sqlalchemy_mock.mock_engine()
-mock_engine1 = sqlalchemy_mock.mock_engine()
-mock_engine2 = sqlalchemy_mock.mock_engine()
+MOCK_URL = "sqlite:///:memory:"
+
+mock_engine = SQLAlchemyCore.create_engine(MOCK_URL)
+mock_engine1 = SQLAlchemyCore.create_engine(MOCK_URL)
+mock_engine2 = SQLAlchemyCore.create_engine(MOCK_URL)
 
 Base = declarative_base()
 Base1 = declarative_base()

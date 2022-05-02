@@ -1,5 +1,5 @@
 import kimera_data.components.etl as kimera_etl
-from kimera_data.components.engines.pandas.transformers import PandasTransformer, PandasTransformerPrelation
+from kimera_data.components.engines.pandas.transformer import PandasTransformerBasic, PandasTransformerBasicPrelation
 
 
 def extract_data_a():
@@ -30,8 +30,10 @@ def prelation_dict():
 
 if __name__ == '__main__':
     data_a, data_b = extract_data_a(), extract_data_b()
-    data_a = kimera_etl.transformer().input_data(data_a, 'data_a').apply(PandasTransformer.set_name_attr_in_object_pandas).transform()
-    data_b = kimera_etl.transformer().input_data(data_b, 'data_b').apply(PandasTransformer.set_name_attr_in_object_pandas).transform()
+    data_a = kimera_etl.transformer().input_data(data_a, 'data_a').apply(
+        PandasTransformerBasic.set_name_attr_in_object_pandas).transform()
+    data_b = kimera_etl.transformer().input_data(data_b, 'data_b').apply(
+        PandasTransformerBasic.set_name_attr_in_object_pandas).transform()
     data_c = kimera_etl.transformer().input_data(['Nombre'], [data_b[0], data_a[0]], prelation_dict()). \
-        apply(PandasTransformerPrelation.prelation_external).transform()  # TODO: refencia dinamica
+        apply(PandasTransformerBasicPrelation.prelation_external).transform()  # TODO: refencia dinamica
     print(data_a, data_b, data_c)

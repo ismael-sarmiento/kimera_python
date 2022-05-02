@@ -1,5 +1,5 @@
 import kimera_data.components.etl as kimera_etl
-from kimera_data.components.engines.pandas.transformers import PandasTransformer, PandasTransformerAuditory
+from kimera_data.components.engines.pandas.transformer import PandasTransformerBasic, PandasTransformerBasicAuditory
 
 
 def extract_data_a():
@@ -23,14 +23,14 @@ def extract_data_b():
 def transform_data_shape(_object):
     transformer = kimera_etl.transformer(). \
         input_data(_object). \
-        apply(PandasTransformer.shape, PandasTransformer.shape)
+        apply(PandasTransformerBasic.shape, PandasTransformerBasic.shape)
     return transformer.transform()
 
 
 def transform_data_df_auditory(_object_a, _object_b, primary_key_column):
     transformer = kimera_etl.transformer(). \
         input_data(_object_a, _object_b, primary_key_column=primary_key_column). \
-        apply(PandasTransformerAuditory.build_df_auditory)
+        apply(PandasTransformerBasicAuditory.build_df_auditory)
     return transformer.transform()
 
 

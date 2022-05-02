@@ -2,7 +2,7 @@ from kimera_app.db.sqlalchemy.models.mysql.schemas.world import Sample
 from kimera_db.components.sqlalchemy.core import SQLAlchemyCore
 from kimera_db.components.sqlalchemy.orm import SQLAlchemyORM
 
-url_mysql = SQLAlchemyCore.create_url(drivername="mysql",
+url_mysql = SQLAlchemyCore.create_url(driver_name="mysql",
                                       username="root",
                                       password="Maximus.Ismael.1993",
                                       host="localhost",

@@ -1,5 +1,5 @@
 import kimera_data.components.etl as kimera_etl
-from kimera_data.components.engines.pandas.transformers import PandasTransformer
+from kimera_data.components.engines.pandas.transformer import PandasTransformerBasic
 
 
 def extract_csv_file():
@@ -8,12 +8,13 @@ def extract_csv_file():
 
 
 def transform_csv_file(_object):
-    transform = kimera_etl.transformer().input_data(_object).apply(PandasTransformer.shape)
+    transform = kimera_etl.transformer().input_data(_object).apply(PandasTransformerBasic.shape)
     return transform
 
 
 def transforms_csv_file(_object):
-    transform = kimera_etl.transformer().input_data(_object).apply(PandasTransformer.shape, PandasTransformer.shape)
+    transform = kimera_etl.transformer().input_data(_object).apply(PandasTransformerBasic.shape,
+                                                                   PandasTransformerBasic.shape)
     return transform
 
 
